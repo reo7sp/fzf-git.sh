@@ -218,7 +218,7 @@ _fzf_git_branches() {
     --bind "alt-a:change-border-label(🌳 All branches)+reload:bash \"$__fzf_git\" --list all-branches" \
     --bind "alt-h:become:LIST_OPTS=\$(cut -c3- <<< {} | cut -d' ' -f1) $shell \"$__fzf_git\" --run hashes" \
     --bind "alt-enter:become:printf '%s\n' {+} | cut -c3- | sed 's@[^/]*/@@'" \
-    --preview "git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' \$(cut -c3- <<< {} | cut -d' ' -f1) --" "$@" |
+     "$@" |
   sed 's/^\* //' | awk '{print $1}' # Slightly modified to work with hashes as well
 }
 
@@ -254,7 +254,7 @@ _fzf_git_remotes() {
     --header 'CTRL-O (open in browser)' \
     --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list remote {1}" \
     --preview-window right,70% \
-    --preview "git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' '{1}/$(git rev-parse --abbrev-ref HEAD)' --" "$@" |
+     "$@" |
   cut -d$'\t' -f1
 }
 
@@ -290,7 +290,7 @@ _fzf_git_each_ref() {
     --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list {1} {2}" \
     --bind "alt-e:execute:${EDITOR:-vim} <(git show {2}) > /dev/tty" \
     --bind "alt-a:change-border-label(🍀 Every ref)+reload:bash \"$__fzf_git\" --list all-refs" \
-    --preview "git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' {2} --" "$@" |
+     "$@" |
   awk '{print $2}'
 }
 
@@ -300,11 +300,7 @@ _fzf_git_worktrees() {
     --border-label '🌴 Worktrees ' \
     --header 'CTRL-X (remove worktree)' \
     --bind 'ctrl-x:reload(git worktree remove {1} > /dev/null; git worktree list)' \
-    --preview "
-      git -c color.status=$(__fzf_git_color .) -C {1} status --short --branch
-      echo
-      git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' {2} --
-    " "$@" |
+     "$@" |
   awk '{print $1}'
 }
 
